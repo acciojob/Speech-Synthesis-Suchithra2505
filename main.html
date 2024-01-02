@@ -23,8 +23,8 @@
 
       <input name="pitch" type="range" min="0" max="2" step="0.1">
       <textarea name="text">Hello! I love JavaScript 👍</textarea>
-      <button id="stop">Stop!</button>
-      <button id="speak">Speak</button>
+      <button id="stop">Speak!</button>
+      <button id="speak">Stop</button>
 
     </div>
 
@@ -37,11 +37,12 @@
   const stopButton = document.querySelector('#stop');
 
   //Your code goes here
-	const verifyButton = document.querySelector('#verify');
+
+  const verifyButton = document.querySelector('#verify');
   const para = document.querySelector('#para');
 
   function populateVoices() {
-    voices = this.getVoices();
+    voices = speechSynthesis.getVoices();
     voicesDropdown.innerHTML = voices
       .filter(voice => voice.lang.includes('en'))
       .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
@@ -66,7 +67,7 @@
   }
 
   function toggleStartButton() {
-    speakButton.disabled = !speechSynthesis.speaking;
+    speakButton.disabled = speechSynthesis.speaking;
   }
 
   function handleSpeak() {
@@ -90,8 +91,8 @@
 
   msg.text = document.querySelector('[name="text"]').value;
   speechSynthesis.addEventListener('voiceschanged', populateVoices);
-  voicesDropdown.addEventListener('change', setVoice);
-  options.forEach(option => option.addEventListener('change', setOption));
+  voicesDropdown.addEventListener('input', setVoice);
+  options.forEach(option => option.addEventListener('input', setOption));
   speakButton.addEventListener('click', handleSpeak);
   stopButton.addEventListener('click', handleStop);
   verifyButton.addEventListener('click', handleVerify);
