@@ -37,6 +37,64 @@
   const stopButton = document.querySelector('#stop');
 
   //Your code goes here
+	const verifyButton = document.querySelector('#verify');
+  const para = document.querySelector('#para');
+
+  function populateVoices() {
+    voices = this.getVoices();
+    voicesDropdown.innerHTML = voices
+      .filter(voice => voice.lang.includes('en'))
+      .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
+      .join('');
+  }
+
+  function setVoice() {
+    msg.voice = voices.find(voice => voice.name === this.value);
+    toggle();
+  }
+
+  function toggle(startOver = true) {
+    speechSynthesis.cancel();
+    if (startOver) {
+      speechSynthesis.speak(msg);
+    }
+  }
+
+  function setOption() {
+    msg[this.name] = this.value;
+    toggle();
+  }
+
+  function toggleStartButton() {
+    speakButton.disabled = !speechSynthesis.speaking;
+  }
+
+  function handleSpeak() {
+    toggle(false);
+  }
+
+  function handleStop() {
+    toggle(true);
+  }
+
+  function handleVerify() {
+    if (clickedImages[0] === clickedImages[1]) {
+      para.textContent = "You are a human. Congratulations!";
+    } else {
+      para.textContent = "We can't verify you as a human. You selected the non-identical tiles.";
+    }
+
+    verifyButton.style.display = "none";
+    resetButton.style.display = "block";
+  }
+
+  msg.text = document.querySelector('[name="text"]').value;
+  speechSynthesis.addEventListener('voiceschanged', populateVoices);
+  voicesDropdown.addEventListener('change', setVoice);
+  options.forEach(option => option.addEventListener('change', setOption));
+  speakButton.addEventListener('click', handleSpeak);
+  stopButton.addEventListener('click', handleStop);
+  verifyButton.addEventListener('click', handleVerify);
 </script>
 
 </body>
